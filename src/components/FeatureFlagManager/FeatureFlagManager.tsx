@@ -15,12 +15,13 @@ import {
 import { NavigateFunction, useNavigate } from "react-router-dom";
 
 interface FeatureFlag {
-  id: string;
+  flagId: string;
+  environmentId: string;
   name: string;
-  description?: string;
-  isEnabled: boolean;
-  createdAt: Date;
-  lastUpdatedAt: Date;
+  enabled: boolean;
+  rules: string;
+  version: number;
+  updatedAt: string;
 }
 
 interface FeatureFlagListProps {
@@ -36,20 +37,22 @@ const FeatureFlagList: React.FC<FeatureFlagListProps> = ({
         <TableHead>
           <TableRow>
             <TableCell>Feature Name</TableCell>
-            <TableCell>Description</TableCell>
+            <TableCell>Environment ID</TableCell>
             <TableCell>Enabled</TableCell>
-            <TableCell>Created at</TableCell>
-            <TableCell>Last updated at</TableCell>
+            <TableCell>Version</TableCell>
+            <TableCell>Last updated</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {featureFlags.map((featureFlag: FeatureFlag) => (
-            <TableRow key={featureFlag.id}>
+            <TableRow key={featureFlag.flagId}>
               <TableCell>{featureFlag.name}</TableCell>
-              <TableCell>{featureFlag.description}</TableCell>
-              <TableCell>{featureFlag.isEnabled.toString()}</TableCell>
-              <TableCell>{featureFlag.createdAt.toString()}</TableCell>
-              <TableCell>{featureFlag.lastUpdatedAt.toString()}</TableCell>
+              <TableCell>{featureFlag.environmentId}</TableCell>
+              <TableCell>{featureFlag.enabled ? "Yes" : "No"}</TableCell>
+              <TableCell>{featureFlag.version}</TableCell>
+              <TableCell>
+                {new Date(featureFlag.updatedAt).toLocaleString()}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -64,7 +67,7 @@ const FeatureFlagManager: React.FC = () => {
 
   useEffect(() => {
     const fetchFeatureFlags = async () => {
-      const response = await Api.get("/api/feature-flags");
+      const response = await Api.get<FeatureFlag[]>("/api/v1/feature-flags");
       setFeatureFlags(response);
     };
     fetchFeatureFlags();

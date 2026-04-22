@@ -43,7 +43,7 @@ const AddFeatureFlag: React.FC = () => {
     };
 
     try {
-      await Api.post("/api/feature-flags", newFeatureToggle);
+      await Api.post("/api/v1/feature-flags", newFeatureToggle);
       setFeatureName("");
       setDescription("");
       setTags([]);
