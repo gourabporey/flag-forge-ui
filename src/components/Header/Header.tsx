@@ -1,14 +1,14 @@
 import React from "react";
 import { Button, Container, Stack, Typography } from "@mui/material";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import Api from "../../api/Api";
+import AuthApi from "../../api/auth.api";
 
 const Header = () => {
   const navigate = useNavigate();
-  const isAuthenticated = Api.isAuthenticated();
+  const isAuthenticated = AuthApi.isAuthenticated();
 
   const handleLogout = () => {
-    Api.logout();
+    AuthApi.logout();
     navigate("/login");
   };
 
@@ -29,18 +29,33 @@ const Header = () => {
         <Stack direction="row" spacing={1}>
           {isAuthenticated ? (
             <>
-              <Button component={RouterLink} to="/" variant="contained" color="success">
+              <Button
+                component={RouterLink}
+                to="/"
+                variant="contained"
+                color="success">
                 Flags
               </Button>
-              <Button component={RouterLink} to="/setup" variant="contained" color="success">
+              <Button
+                component={RouterLink}
+                to="/setup"
+                variant="contained"
+                color="success">
                 Setup
               </Button>
-              <Button variant="contained" color="success" onClick={handleLogout}>
+              <Button
+                variant="contained"
+                color="success"
+                onClick={handleLogout}>
                 Logout
               </Button>
             </>
           ) : (
-            <Button component={RouterLink} to="/login" variant="contained" color="success">
+            <Button
+              component={RouterLink}
+              to="/login"
+              variant="contained"
+              color="success">
               Login
             </Button>
           )}

@@ -8,15 +8,8 @@ import {
   Paper,
   Stack,
 } from "@mui/material";
-import Api from "../../api/Api";
-
-interface FeatureToggle {
-  name: string;
-  description?: string;
-  isEnabled: boolean;
-  environment: string;
-  tags?: string[];
-}
+import { FeatureToggle } from "./types";
+import { createFeatureFlag } from "../../api/featureflags.api";
 
 const AddFeatureFlag: React.FC = () => {
   const [featureName, setFeatureName] = useState<string>("");
@@ -42,14 +35,18 @@ const AddFeatureFlag: React.FC = () => {
       tags,
     };
 
-    try {
-      await Api.post("/api/v1/feature-flags", newFeatureToggle);
+    const resetFields = () => {
       setFeatureName("");
       setDescription("");
       setTags([]);
       setEnvironment("");
       setIsEnabled(false);
       setError(null);
+    };
+
+    try {
+      await createFeatureFlag(newFeatureToggle);
+      resetFields();
     } catch (err) {
       console.error(err);
       setError("Failed to add feature toggle. Try again.");

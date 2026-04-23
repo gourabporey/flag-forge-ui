@@ -18,7 +18,10 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import Api, { CreatedEnvironment, Environment, Tenant } from "../../api/Api";
+import Tenant from "../../models/tenant";
+import { CreatedEnvironment, Environment } from "../../models/environment";
+import { createTenant, getTenants } from "../../api/tenants.api";
+import { createEnvironment, getEnvironments } from "../../api/environments.api";
 
 const TenantEnvironmentManager: React.FC = () => {
   const [tenants, setTenants] = useState<Tenant[]>([]);
@@ -32,7 +35,7 @@ const TenantEnvironmentManager: React.FC = () => {
 
   const loadTenants = useCallback(
     async (preferredTenantId?: string) => {
-      const tenantList = await Api.getTenants();
+      const tenantList = await getTenants();
       setTenants(tenantList);
 
       const nextTenantId = preferredTenantId ?? selectedTenantId;
@@ -40,7 +43,7 @@ const TenantEnvironmentManager: React.FC = () => {
         setSelectedTenantId(tenantList[0].tenantId);
       }
     },
-    [selectedTenantId]
+    [selectedTenantId],
   );
 
   useEffect(() => {
@@ -53,17 +56,19 @@ const TenantEnvironmentManager: React.FC = () => {
       return;
     }
 
-    Api.getEnvironments(selectedTenantId)
+    getEnvironments(selectedTenantId)
       .then(setEnvironments)
       .catch(err => setError(err.message));
   }, [selectedTenantId]);
 
-  const handleCreateTenant = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleCreateTenant = async (
+    event: React.FormEvent<HTMLFormElement>,
+  ) => {
     event.preventDefault();
     setError(null);
 
     try {
-      const tenant = await Api.createTenant(tenantName);
+      const tenant = await createTenant(tenantName);
       setTenantName("");
       setSelectedTenantId(tenant.tenantId);
       await loadTenants(tenant.tenantId);
@@ -73,23 +78,23 @@ const TenantEnvironmentManager: React.FC = () => {
   };
 
   const handleCreateEnvironment = async (
-    event: React.FormEvent<HTMLFormElement>
+    event: React.FormEvent<HTMLFormElement>,
   ) => {
     event.preventDefault();
     setError(null);
     setCreatedEnvironment(null);
 
     try {
-      const environment = await Api.createEnvironment(
+      const environment = await createEnvironment(
         selectedTenantId,
-        environmentName
+        environmentName,
       );
       setEnvironmentName("");
       setCreatedEnvironment(environment);
-      setEnvironments(await Api.getEnvironments(selectedTenantId));
+      setEnvironments(await getEnvironments(selectedTenantId));
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Failed to create environment."
+        err instanceof Error ? err.message : "Failed to create environment.",
       );
     }
   };

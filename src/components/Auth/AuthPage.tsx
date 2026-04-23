@@ -11,7 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import Api from "../../api/Api";
+import AuthApi from "../../api/auth.api";
 
 const AuthPage: React.FC = () => {
   const [mode, setMode] = useState<"login" | "register">("login");
@@ -31,7 +31,7 @@ const AuthPage: React.FC = () => {
 
     try {
       if (mode === "register") {
-        await Api.register({
+        await AuthApi.register({
           email,
           password,
           firstName,
@@ -44,7 +44,7 @@ const AuthPage: React.FC = () => {
         return;
       }
 
-      await Api.login(email, password);
+      await AuthApi.login(email, password);
       navigate("/");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Authentication failed.");

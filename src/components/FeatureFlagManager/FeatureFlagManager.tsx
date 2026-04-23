@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Api from "../../api/Api";
 import {
   Button,
   Container,
@@ -13,8 +12,9 @@ import {
   TableRow,
 } from "@mui/material";
 import { NavigateFunction, useNavigate } from "react-router-dom";
+import { getFeatureFlags } from "../../api/featureflags.api";
 
-interface FeatureFlag {
+export interface FeatureFlag {
   flagId: string;
   environmentId: string;
   name: string;
@@ -67,7 +67,7 @@ const FeatureFlagManager: React.FC = () => {
 
   useEffect(() => {
     const fetchFeatureFlags = async () => {
-      const response = await Api.get<FeatureFlag[]>("/api/v1/feature-flags");
+      const response = await getFeatureFlags();
       setFeatureFlags(response);
     };
     fetchFeatureFlags();

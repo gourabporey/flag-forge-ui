@@ -11,10 +11,14 @@ import Header from "./components/Header/Header";
 import AddFeatureFlag from "./components/AddFeatureFlag/AddFeatureFlag";
 import TenantEnvironmentManager from "./components/TenantEnvironmentManager/TenantEnvironmentManager";
 import AuthPage from "./components/Auth/AuthPage";
-import Api from "./api/Api";
+import AuthApi from "./api/auth.api";
 
 const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
-  return Api.isAuthenticated() ? children : <Navigate to="/login" replace />;
+  return AuthApi.isAuthenticated() ? (
+    children
+  ) : (
+    <Navigate to="/login" replace />
+  );
 };
 
 const App = () => {
